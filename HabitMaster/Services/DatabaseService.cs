@@ -10,13 +10,11 @@ namespace HabitMaster.Services
     public class DatabaseService // klasa odpowiedzialna za zapis i odczyt danych
     {
         SQLiteAsyncConnection _database;
-        // połączenie z bazą SQLite (async – działa w tle i nie blokuje aplikacji)
 
-        /// <summary>
-        /// Inicjalizacja bazy danych – tworzy połączenie i tabele.
-        /// Wywoływana automatycznie przed każdą operacją na bazie.
-        /// </summary>
-        async Task Init()
+        //obsługuje to asynchroniczne połączenie z bazą danych
+        //asynchronicznie by aplikacja się nie zacinała podczas jego wykonywania
+        async Task init() //inicjalizacja
+
         {
             // Jeśli połączenie już istnieje, to nie otwieramy go ponownie
             if (_database is not null)
@@ -157,5 +155,6 @@ namespace HabitMaster.Services
                 ? await _database.InsertAsync(achievement)
                 : await _database.UpdateAsync(achievement);
         }
+
     }
 }
