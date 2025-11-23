@@ -1,62 +1,55 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.IO;
 using System.Threading.Tasks;
 using HabitMaster.Models;
 using SQLite;
 
 namespace HabitMaster.Services
 {
-    public class DatabaseService //zapis i odczyt danych
+    public class DatabaseService // klasa odpowiedzialna za zapis i odczyt danych
     {
         SQLiteAsyncConnection _database;
-<<<<<<< Updated upstream
+
         //obsługuje to asynchroniczne połączenie z bazą danych
         //asynchronicznie by aplikacja się nie zacinała podczas jego wykonywania
         async Task init() //inicjalizacja
-=======
-        // połączenie z bazą SQLite (async – działa w tle i nie blokuje aplikacji)
 
-        
-        /// Inicjalizacja bazy danych – tworzy połączenie i tabele.
-        /// Wywoływana automatycznie przed każdą operacją na bazie.
-       
-        async Task Init()
->>>>>>> Stashed changes
         {
-            if (_database is not null) //jeśli połączenie już istnieje to go drugi raz nie otwiera
+            // Jeśli połączenie już istnieje, to nie otwieramy go ponownie
+            if (_database is not null)
                 return;
 
-            //ustalenie ścieżki do bazy danych.
+            // Ustalenie ścieżki do pliku bazy danych
             var dbPath = Path.Combine(FileSystem.AppDataDirectory, "HabitMaster.db3");
 
+            // Utworzenie połączenia asynchronicznego z SQLite
             _database = new SQLiteAsyncConnection(dbPath);
 
-            //stworzenie tabel(dodanie modeli z Models) AKTUALIZOWAĆ PO KAŻDYM DODANIU NOWEJ!!!!!!!!!
-
+            // Tworzenie tabel (bardzo ważne! aktualizować po dodaniu nowych modeli)
             await _database.CreateTableAsync<Habit>();
-
-
-
+            await _database.CreateTableAsync<Category>();
+            await _database.CreateTableAsync<Reminder>();
+            await _database.CreateTableAsync<HabitHistory>();
+            await _database.CreateTableAsync<Achievement>();
         }
 
-        //Pobieranie wszystkich nawyków PÓŹNIEJ DOKOŃCZĘ
+        // ============================================================
+        // HABIT – OPERACJE Z BAZĄ
+        // ============================================================
 
-<<<<<<< Updated upstream
-=======
-        
+        /// <summary>
         /// Pobiera wszystkie nawyki z bazy.
-        
+        /// </summary>
         public async Task<List<Habit>> GetHabitsAsync()
         {
             await Init();
             return await _database.Table<Habit>().ToListAsync();
         }
 
-        
+        /// <summary>
         /// Zapisuje (dodaje lub aktualizuje) nawyk.
-        
+        /// </summary>
         public async Task<int> SaveHabitAsync(Habit habit)
         {
             await Init();
@@ -66,40 +59,17 @@ namespace HabitMaster.Services
                 return await _database.UpdateAsync(habit); // aktualizacja
         }
 
-        
+        /// <summary>
         /// Usuwa nawyk z bazy.
-        
+        /// </summary>
         public async Task<int> DeleteHabitAsync(Habit habit)
         {
             await Init();
-
-            //Dodane przez Paweł, usuwanie historii nawyku
-            var history = await GetHistoryForHabitAsync(habit.Id);
-            foreach (var item in history)
-            {
-                await _database.DeleteAsync(item);
-            }
-
-            //Dodane przez Paweł, usuwanie przypomnień o nawyku
-            var reminders = await GetRemindersForHabitAsync(habit.Id);
-            foreach (var reminderitem in reminders)
-            {
-                await _database.DeleteAsync(reminderitem);
-            }
-
-
             return await _database.DeleteAsync(habit);
         }
 
-        //Usuwa wpis z historii 
-        public async Task<int> DeleteHabitHistoryAsync(HabitHistory history)
-        {
-            await Init();
-            return await _database.DeleteAsync(history);
-        }
-
         // ============================================================
-        // KATEGORIA – OPERACJE Z BAZĄ
+        // CATEGORY – OPERACJE Z BAZĄ
         // ============================================================
 
         public async Task<List<Category>> GetCategoriesAsync()
@@ -185,6 +155,6 @@ namespace HabitMaster.Services
                 ? await _database.InsertAsync(achievement)
                 : await _database.UpdateAsync(achievement);
         }
->>>>>>> Stashed changes
+
     }
 }
