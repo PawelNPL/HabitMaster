@@ -15,7 +15,9 @@ namespace HabitMaster.Models
         [Indexed]
         public int HabitId { get; set; }     // jaki nawyk
 
-        public DateTime Date { get; set; }   // kiedy wykonano
+      
+        public DateTime DateCompleted { get; set; }   // kiedy wykonano
+
 
         public bool Completed { get; set; }  // czy wykonano (true/false)
     }
