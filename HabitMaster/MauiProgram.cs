@@ -1,25 +1,30 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.DependencyInjection;
+using HabitMaster.Services;
+using HabitMaster.ViewModels;
+using HabitMaster.Views;
 
-namespace HabitMaster
+public static class MauiProgram
 {
-    public static class MauiProgram
+    public static MauiApp CreateMauiApp()
     {
-        public static MauiApp CreateMauiApp()
-        {
-            var builder = MauiApp.CreateBuilder();
-            builder
-                .UseMauiApp<App>()
-                .ConfigureFonts(fonts =>
-                {
-                    fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
-                    fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
-                });
+        var builder = MauiApp.CreateBuilder();
+        builder
+            .UseMauiApp<App>()
+            .ConfigureFonts(fonts =>
+            {
+                // twoje fonty
+            });
 
-#if DEBUG
-    		builder.Logging.AddDebug();
-#endif
+        // REJESTRACJA SERWISÓW I VIEWMODEL
+        builder.Services.AddSingleton<DatabaseService>();            // jedna instancja bazy
+        builder.Services.AddTransient<HabitsViewModel>();           // viewmodel rozwiązywany na żądanie
+        builder.Services.AddTransient<HabitsPage>();                // strona rozwiązywana przez DI jeśli potrzebna
 
-            return builder.Build();
-        }
+        var app = builder.Build();
+
+        // Udostępnij IServiceProvider przez App
+        App.ServiceProvider = app.Services;
+
+        return app;
     }
 }

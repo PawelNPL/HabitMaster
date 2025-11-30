@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:models="clr-namespace:HabitMaster.Models"
+             x:Class="HabitMaster.Views.HabitsPage"
+             x:Name="PageRoot"
+             Title="Nawyki">
+
+    <VerticalStackLayout Padding="16" Spacing="12">
+
+        <HorizontalStackLayout Spacing="8">
+            <Entry Placeholder="Nowy nawyk"
+                   Text="{Binding NewHabitName}"
+                   HorizontalOptions="FillAndExpand" />
+            <Button Text="Dodaj" Command="{Binding AddHabitCommand}" />
+        </HorizontalStackLayout>
+
+        <CollectionView ItemsSource="{Binding Habits}">
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:Habit">
+                    <Frame CornerRadius="8" Padding="10" Margin="4" HasShadow="True">
+                        <Grid ColumnDefinitions="*,Auto,Auto" RowDefinitions="Auto">
+                            <StackLayout Grid.Column="0">
+                                <Label Text="{Binding Name}" FontAttributes="Bold" FontSize="16" />
+                                <Label Text="{Binding CurrentStreak, StringFormat='Streak {0} dni'}" FontSize="12" />
+                            </StackLayout>
+
+                            <Button Grid.Column="1" Text="✓"
+                                    Command="{Binding Source={x:Reference PageRoot}, Path=BindingContext.CompleteHabitCommand}"
+                                    CommandParameter="{Binding .}" WidthRequest="40" />
+
+                            <Button Grid.Column="2" Text="Usuń"
+                                    Command="{Binding Source={x:Reference PageRoot}, Path=BindingContext.DeleteHabitCommand}"
+                                    CommandParameter="{Binding .}" WidthRequest="60" />
+                        </Grid>
+                    </Frame>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+    </VerticalStackLayout>
+
+</ContentPage>
