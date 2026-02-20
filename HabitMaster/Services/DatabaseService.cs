@@ -13,7 +13,7 @@ namespace HabitMaster.Services
 
         //obsługuje to asynchroniczne połączenie z bazą danych
         //asynchronicznie by aplikacja się nie zacinała podczas jego wykonywania
-        async Task init() //inicjalizacja
+        async Task Init() //inicjalizacja
 
         {
             // Jeśli połączenie już istnieje, to nie otwieramy go ponownie
