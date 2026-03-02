@@ -127,6 +127,7 @@ namespace HabitMaster.Services
             await Init();
             return await _database.Table<HabitHistory>()
                 .Where(h => h.HabitId == habitId)
+                .OrderByDescending(h => h.DateCompleted)
                 .ToListAsync();
         }
 

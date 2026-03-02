@@ -3,6 +3,9 @@ using HabitMaster.Services;
 using HabitMaster.ViewModels;
 using HabitMaster.Views;
 
+
+namespace HabitMaster;
+
 public static class MauiProgram
 {
     public static MauiApp CreateMauiApp()
@@ -19,11 +22,12 @@ public static class MauiProgram
         builder.Services.AddSingleton<DatabaseService>();            // jedna instancja bazy
         builder.Services.AddTransient<HabitsViewModel>();           // viewmodel rozwiązywany na żądanie
         builder.Services.AddTransient<HabitsPage>();                // strona rozwiązywana przez DI jeśli potrzebna
+        builder.Services.AddTransient<HabitDetailsViewModel>(); //ViewModel do szczegółów (statystyk) poszczególnych habitów
+        builder.Services.AddTransient<HabitDetailsPage>();         //View j.w
 
         var app = builder.Build();
 
-        // Udostępnij IServiceProvider przez App
-        App.ServiceProvider = app.Services;
+ 
 
         return app;
     }

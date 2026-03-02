@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:HabitMaster.ViewModels"
+             xmlns:models="clr-namespace:HabitMaster.Models"
+             x:DataType="viewmodels:HabitDetailsViewModel"
+             x:Class="HabitMaster.Views.HabitDetailsPage"
+             Title="Szczegóły nawyku">
+    <VerticalStackLayout Padding="20" Spacing="20">
+        <Frame BackgroundColor="{Binding Habit.ColorHex}" CornerRadius="50" HeightRequest="100" WidthRequest="100" HorizontalOptions="Center" HasShadow="true" Padding="0">
+            <Label Text="{Binding Habit.Icon}" FontSize="50" HorizontalOptions="Center" VerticalOptions="Center" />
+        </Frame>
+
+        <Label Text="{Binding Habit.Name}" FontSize="28" FontAttributes="Bold" HorizontalOptions="Center" />
+        <Label Text="{Binding Habit.CurrentStreak, StringFormat='Aktualny Streak = {0}'}" FontSize="18" HorizontalOptions="Center" TextColor="Gray" />
+
+        <BoxView HeightRequest="1" Color="LightGray" Margin="0,10" />
+
+        <Label Text="Historia Wykonań:" FontSize="18" FontAttributes="Bold" />
+
+        <CollectionView ItemsSource="{Binding HistoryList}">
+            <CollectionView.EmptyView>
+                <Label Text="Jeszcze nie wykonano tego nawyku" HorizontalOptions="Center" Margin="20" TextColor="Gray" FontAttributes="Italic"/>
+            </CollectionView.EmptyView>
+
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:HabitHistory">
+                    <Frame Padding="15" Margin="0,6" CornerRadius="8" BackgroundColor="#F8F9FF" BorderColor="LightGray">
+                        <Label Text="{Binding DateCompleted, StringFormat='{0:dd MMMM yyyy, o godzinie HH:mm}'}" FontSize="16" />
+                    </Frame>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+            
+        </CollectionView>
+    </VerticalStackLayout>
+</ContentPage>

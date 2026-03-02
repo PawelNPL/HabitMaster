@@ -5,6 +5,7 @@
         public AppShell()
         {
             InitializeComponent();
+            Routing.RegisterRoute(nameof(Views.HabitDetailsPage), typeof(Views.HabitDetailsPage)); //rejestracja ścieżki
         }
     }
 }

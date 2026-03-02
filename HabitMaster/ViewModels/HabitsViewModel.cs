@@ -24,6 +24,17 @@ namespace HabitMaster.ViewModels
         [ObservableProperty]
         string newHabitName;
 
+        [ObservableProperty]
+        private string selectedIcon = "🎯";
+
+        [ObservableProperty]
+        private string selectedColorHex = "#FF5049";
+
+        [RelayCommand]
+        private void SelectColor(string color)
+        {
+            selectedColorHex = color;
+        }
         //konstruktor 
         public HabitsViewModel(DatabaseService dbService)
         {
@@ -46,14 +57,15 @@ namespace HabitMaster.ViewModels
         [RelayCommand]
         async Task AddHabitAsync()
         {
-            if (string.IsNullOrWhiteSpace(newHabitName))
+            if (string.IsNullOrWhiteSpace(NewHabitName))
                 return;
 
             //tworzenie nowego obiektu
             var habit = new Habit
             {
-                Name = newHabitName,
-                ColorHex = "#F5049", //domyślny kolor *później zmienić
+                Name = NewHabitName,
+                ColorHex = selectedColorHex,
+                Icon = selectedIcon,
                 CurrentStreak = 0,
                 LastCompleted = DateTime.MinValue
             };
@@ -67,21 +79,32 @@ namespace HabitMaster.ViewModels
 
             //Wyczyszczenie pola tekstowego
 
-            newHabitName = String.Empty;
+            NewHabitName = String.Empty;
         }
 
         //odhaczanie nawyków
         [RelayCommand]
         async Task CompleteHabitAsync(Habit habit)
         {
-            if (habit == null)
+
+            //poprawiony kod zapisu
+            if (habit == null )
                 return;
 
             if (!habit.IsCompletedToday)
             {
-                //aktualizacja danych
-                habit.CurrentStreak++;
+                if (habit.LastCompleted.Date == DateTime.Today.AddDays(-1))
+                {
+                    habit.CurrentStreak++;
+                }
+
+                else
+                {
+                    habit.CurrentStreak = 1;
+                }
+
                 habit.LastCompleted = DateTime.Now;
+               
 
                 //zapis danych w bazie
                 await _dbService.SaveHabitAsync(habit);
@@ -95,7 +118,14 @@ namespace HabitMaster.ViewModels
                 await _dbService.SaveHabitHistoryAsync(HistoryEntry);
 
                 //odświeżenie widoku
-                await LoadHabitsAsync();
+                //await LoadHabitsAsync();
+
+                var index = Habits.IndexOf(habit);
+                if (index >= 0)
+                {
+                    Habits.RemoveAt(index);
+                    Habits.Insert(index, habit);
+                }
             }
         }
 
@@ -120,7 +150,18 @@ namespace HabitMaster.ViewModels
         }
 
 
+        [RelayCommand]
+        async Task GoToDetailsAsync(Habit habit)
+        {
+            if (habit == null) return;
 
+            var navigationParameter = new Dictionary<string, object>
+            {
+                {"Habit", habit }
+            };
+
+            await Shell.Current.GoToAsync(nameof(Views.HabitDetailsPage), navigationParameter);
+        }
 
 
     }

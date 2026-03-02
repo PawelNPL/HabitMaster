@@ -1,17 +1,15 @@
-﻿using HabitMaster.ViewModels;
 
-namespace HabitMaster.Views
+using HabitMaster.ViewModels;
+
+namespace HabitMaster.Views;
+
+public partial class HabitsPage : ContentPage
 {
-    public partial class HabitsPage : ContentPage
-    {
-        public HabitsPage()
-        {
-            InitializeComponent();
+	public HabitsPage(HabitsViewModel vm)
+	{
+        InitializeComponent();
+		BindingContext = vm;
 
-            var vm = App.ServiceProvider.GetService(typeof(HabitsViewModel)) as HabitsViewModel;
-            BindingContext = vm;
-
-            vm?.LoadHabitsCommand.Execute(null);
-        }
-    }
+		vm.LoadHabitsCommand.Execute(null);
+	}
 }
